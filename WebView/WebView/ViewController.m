@@ -18,10 +18,8 @@
     [super viewDidLoad];
     
     [self setBarButtonItem];
-    
-
-    // Do any additional setup after loading the view, typically from a nib.
 }
+
 - (void)setBarButtonItem
 {
     //隐藏导航栏上的返回按钮
@@ -31,8 +29,8 @@
     //创建searchBar
     UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(titleView.frame) - 15, 30)];
     //默认提示文字
-    searchBar.placeholder = @"https://www.qimai.cn/";
-    searchBar.text = @"https://www.baidu.com/";
+    searchBar.placeholder = @"http://baidu.com";
+    searchBar.text = @"http://";
     //背景图片
     searchBar.backgroundImage = [UIImage imageNamed:@"clearImage"];
     //代理
@@ -66,28 +64,14 @@
 }
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-
     NSString *urlStr = searchBar.text;
-    if(![urlStr containsString:@"http://"] && ![urlStr containsString:@"https://"]){
-        urlStr = [NSString stringWithFormat:@"http://%@",urlStr];
-    }
-    
-    [self.searchBar resignFirstResponder];
-    WebViewController *webVC = [[WebViewController alloc]init];
-    webVC.urlStr = urlStr;
-    [self.navigationController pushViewController:webVC animated:YES];
+    [self presentWebViewWithUrl:urlStr];
+
 }
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     NSString *urlStr = searchBar.text;
-    if(![urlStr containsString:@"http://"] && ![urlStr containsString:@"https://"]){
-        urlStr = [NSString stringWithFormat:@"http://%@",urlStr];
-    }
-    
-    [self.searchBar resignFirstResponder];
-    WebViewController *webVC = [[WebViewController alloc]init];
-    webVC.urlStr = urlStr;
-    [self.navigationController pushViewController:webVC animated:YES];
+    [self presentWebViewWithUrl:urlStr];
 }
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
 {
@@ -98,9 +82,29 @@
 
 }
 
+- (void)presentWebViewWithUrl:(NSString*)urlStr{
+    if(!urlStr || ![urlStr length]){
+        urlStr = @"http://baidu.com";
+    }
+    if(![urlStr containsString:@"http://"] && ![urlStr containsString:@"https://"]){
+        urlStr = [NSString stringWithFormat:@"http://%@",urlStr];
+    }
+    [[NSUserDefaults standardUserDefaults]setObject:urlStr forKey:@"lastUrl"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    [self.searchBar resignFirstResponder];
+    WebViewController *webVC = [[WebViewController alloc]init];
+    webVC.urlStr = urlStr;
+    
+    UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:webVC];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"lastUrl"]){
+        self.searchBar.text = [[NSUserDefaults standardUserDefaults]objectForKey:@"lastUrl"];
+    }
     if (!_searchBar.isFirstResponder) {
         [self.searchBar becomeFirstResponder];
     }

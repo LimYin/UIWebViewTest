@@ -7,7 +7,11 @@
 //
 
 #import "WebViewController.h"
-@import WebKit;
+static NSString *const  backImg = @"iVBORw0KGgoAAAANSUhEUgAAAEgAAABIBAMAAACnw650AAAAG1BMVEUAAAAzMzM2NjY0NDQzMzM4ODgzMzM0NDQzMzPciteJAAAACXRSTlMA/lHYGQruYighBah6AAAAS0lEQVRIx2MYBaOApoA1gAhFahmE1TAJihNWpChoSoRBwg5EGGQyatDINSgMYRBhRZRbx6A4atSoUSiFGOXFIaJgJVxEj4JRQEsAAOYOEBOOQ7hTAAAAAElFTkSuQmCC";
+
+static NSString *const  closeImg = @"iVBORw0KGgoAAAANSUhEUgAAAEgAAABIBAMAAACnw650AAAAMFBMVEUAAAA0NDQ0NDQ5OTkzMzMzMzMzMzMzMzMzMzMzMzMzMzM1NTU2NjY0NDQ2NjYzMzOtBEhrAAAAD3RSTlMAnc4SX6Rv5t+vh2BHQSGi0fSdAAAArUlEQVRIx+3QsQkCQRBG4TlEYyvQEoTLzK4by7ACsQTtQEuwCQs58EwUxuVnuYvGh8bzogmGb5m1LMv+aHee5u0hWNr34zjbDMHSxZdWa/0dLDXej5B3FrQWJehhFlMIiSJIFEKiCBKFkChBQA2CiCoQNXe/GtV6ORAqp3nP0KsciFDXEKU/KhRB+naERBEkCiFRBIn6ChF1ElSpZ7B0FFSp6L37bZoXK8uy7Pc+RU5X+mkNWt0AAAAASUVORK5CYII=";
+
+
 
 @interface WebViewController ()
 
@@ -17,76 +21,80 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.webView = [[WKWebView alloc] initWithFrame:self.view.frame];
-    self.webView.navigationDelegate = self;
-    self.webView.UIDelegate = self;
-    //开了支持滑动返回
-    self.webView.allowsBackForwardNavigationGestures = YES;
-    [self.view addSubview:self.webView];
+    UIView *leftBgview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+    UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+    [leftButton setImage:[self ADTImageWithBase64Data:backImg] forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+    [leftBgview addSubview: leftButton];
+    UIBarButtonItem*left =[[UIBarButtonItem alloc] initWithCustomView:leftBgview];
+    //    self.navigationItem.leftBarButtonItem = left;
     
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_urlStr]]];
-}
-// 页面开始加载时调用
--(void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation{
-    
-}
-// 当内容开始返回时调用
-- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
-    
-}
-// 页面加载完成之后调用
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{//这里修改导航栏的标题，动态改变
-    self.title = webView.title;
-}
-// 页面加载失败时调用
-- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation{
-    
-}
-// 接收到服务器跳转请求之后再执行
-- (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation{
-    
-}
-// 在收到响应后，决定是否跳转
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
-    
-    NSLog(@"%@",webView);
-    NSLog(@"%@",navigationResponse);
-    
-    WKNavigationResponsePolicy actionPolicy = WKNavigationResponsePolicyAllow;
-    //这句是必须加上的，不然会异常
-    decisionHandler(actionPolicy);
-    
-}
-// 在发送请求之前，决定是否跳转
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
-    
-    self.title = webView.title;
-    
-    WKNavigationActionPolicy actionPolicy = WKNavigationActionPolicyAllow;
-    
-    
-    if (navigationAction.navigationType==WKNavigationTypeBackForward) {//判断是返回类型
-        
+    UIBarButtonItem *spaceItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    spaceItem.width =  ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)? 0:-10;
+    if (([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)) {
+        leftButton.contentEdgeInsets =UIEdgeInsetsMake(0, -8,0, 8);
+        leftButton.imageEdgeInsets =UIEdgeInsetsMake(0, -8,0, 8);
+        //leftButton.hitEdgeInsets =UIEdgeInsetsMake(0, -6, 0, 0);
     }
-    //这句是必须加上的，不然会异常
-    decisionHandler(actionPolicy);
+    self.navigationItem.leftBarButtonItems = @[spaceItem,left];
+    
+    
+    UIView *rightBgview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+    [rightButton setImage:[self ADTImageWithBase64Data:closeImg] forState:UIControlStateNormal];
+    [rightButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+    [rightBgview addSubview: rightButton];
+    UIBarButtonItem*right =[[UIBarButtonItem alloc] initWithCustomView:rightBgview];
+    if (([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)) {
+        rightButton.contentEdgeInsets =UIEdgeInsetsMake(0, 8,0, -8);
+        rightButton.imageEdgeInsets =UIEdgeInsetsMake(0, 8,0, -8);
+        //leftButton.hitEdgeInsets =UIEdgeInsetsMake(0, -6, 0, 0);
+    }
+    self.navigationItem.rightBarButtonItems = @[spaceItem,right];
+    
+    
+    _webView = [[UIWebView alloc]initWithFrame:self.view.frame];
+    _webView.backgroundColor = [UIColor whiteColor];
+    _webView.opaque = NO;
+    _webView.scrollView.bounces = NO;
+    _webView.mediaPlaybackAllowsAirPlay = NO;
+    _webView.keyboardDisplayRequiresUserAction = NO;
+    _webView.delegate = self;
+    [self.view addSubview:self.webView];
+    NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:_urlStr] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:60];
+    
+    [self.webView loadRequest:request];
+    // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (UIImage*)ADTImageWithBase64Data:(NSString*)base64Str{
+    NSData *data = [[NSData alloc]initWithBase64EncodedString:base64Str options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    return [[UIImage alloc]initWithData:data];
+}
+
+- (void)cancel{
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
 }
 
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
+ 
+    return YES;
 }
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)webViewDidStartLoad:(UIWebView *)webView{
 }
-*/
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView{
+    NSString *title =  [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    self.navigationItem.title = title;
+    [self.webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
+    
+}
 
 @end
