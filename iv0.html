@@ -164,7 +164,7 @@ function d(e) {
 
 function gvl(e) {
     sdk.showClose && sdk.showClose();
-    window.prompt("sdk.showClose")
+    window.prompt("sdk.showClose","sdk.showClose")
     var t = location.search.replace(/v=\d+/g, "v=1");
     window.c && c.resources && 1 < c.resources.length ? location.href = c.resources[1] + t : location.href = "https://img.adtiming.com/sw/vl.html" + t, d(".close").remove()
 }
@@ -187,7 +187,7 @@ addEventListener("touchmove", function (e) {
     })();
     try {
         sdk.hideClose()
-        window.prompt("sdk.hideClose")
+        window.prompt("sdk.hideClose","sdk.hideClose")
     } catch (e) {
         console.log("sdk.hideClose() error", e)
     }
@@ -196,7 +196,7 @@ addEventListener("touchmove", function (e) {
             var e = d(".close");
             e.addEventListener("touchend", gvl), e.style.display = "inline"
         }, 3e3);
-        var t = 1 && JSON.parse(window.prompt("sdk.getCampaign")) || {}, e = t.app_name || t.title, n = navigator.userAgent,
+        var t = 1 && JSON.parse(window.prompt("sdk.getCampaign","sdk.getCampaign")) || {}, e = t.app_name || t.title, n = navigator.userAgent,
             i = /(iPhone|iPad)/i.test(n), o = /Android 4\./i.test(n);
         window.c = t, d(".icon-img").innerHTML = '<img src="' + t.icon_url + '">', document.title = e, d("#title").innerHTML = e;
         var r = document.documentElement.clientHeight - d(".list").offsetHeight, s = "";
@@ -252,7 +252,7 @@ addEventListener("touchmove", function (e) {
         }
         var _ = function () {
             window.sdk && sdk.click()
-            window.prompt("sdk.click")
+            window.prompt("sdk.click","sdk.click")
         }, b = ".list, .video-full";
         t.vpc && (b += ", video");
         var C = document.querySelectorAll(b);
