@@ -190,6 +190,7 @@ addEventListener("touchmove", function (e) {
 }, {passive: !1}), "remove" in Element.prototype || (Element.prototype.remove = function () {
     this.parentNode.removeChild(this)
 }), window.onload = function () {
+    alert("what");
     (window.onresize = function () {
         d(".list .text").style.width = document.documentElement.clientWidth - 2 * d(".list").clientHeight + "px"
     })();
