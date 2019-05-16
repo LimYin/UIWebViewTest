@@ -172,7 +172,7 @@ function d(e) {
 }
 
 function gvl(e) {
-    sdk.showClose && sdk.showClose();
+    alert("sdk.showClose");
     var t = location.search.replace(/v=\d+/g, "v=1");
     window.c && c.resources && 1 < c.resources.length ? location.href = c.resources[1] + t : location.href = "https://img.adtiming.com/sw/vl.html" + t, d(".close").remove()
 }
@@ -190,12 +190,11 @@ addEventListener("touchmove", function (e) {
 }, {passive: !1}), "remove" in Element.prototype || (Element.prototype.remove = function () {
     this.parentNode.removeChild(this)
 }), window.onload = function () {
-    prompt("what");
     (window.onresize = function () {
         d(".list .text").style.width = document.documentElement.clientWidth - 2 * d(".list").clientHeight + "px"
     })();
     try {
-        sdk.hideClose()
+        alert("sdk.hideClose");
     } catch (e) {
         console.log("sdk.hideClose() error", e)
     }
@@ -221,10 +220,10 @@ addEventListener("touchmove", function (e) {
         if (!t.video_url || o || l) {
             d(".video").remove(), d("#voice").remove();
             var v = d(".video-full");
-            if (v.style.height = v.style["line-height"] = r + "px", v.innerHTML = '<img src="' + t.mainimg_url + '">', v.style.display = "inline", t.icon_url && e || d(".list").remove(), sdk.showClose) sdk.showClose(), d(".close").remove(); else {
+            if (v.style.height = v.style["line-height"] = r + "px", v.innerHTML = '<img src="' + t.mainimg_url + '">', v.style.display = "inline", t.icon_url && e || d(".list").remove(), alert("sdk.showClose")) alert("sdk.showClose"), d(".close").remove(); else {
                 var u = d(".close");
                 u.removeEventListener("touchend", gvl, !1), u.addEventListener("touchend", function () {
-                    window.sdk && sdk.close()
+                    alert("sdk.close")
                 })
             }
         } else {
@@ -260,7 +259,7 @@ addEventListener("touchmove", function (e) {
             E.push("<span>" + t.rating + "</span>"), y.innerHTML = E.join("\n")
         }
         var _ = function () {
-            window.sdk && sdk.click()
+            alert("sdk.click")
         }, b = ".list, .video-full";
         t.vpc && (b += ", video");
         var C = document.querySelectorAll(b);
