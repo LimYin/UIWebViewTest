@@ -190,7 +190,7 @@ addEventListener("touchmove", function (e) {
 }, {passive: !1}), "remove" in Element.prototype || (Element.prototype.remove = function () {
     this.parentNode.removeChild(this)
 }), window.onload = function () {
-    alert("what");
+    prompt("what");
     (window.onresize = function () {
         d(".list .text").style.width = document.documentElement.clientWidth - 2 * d(".list").clientHeight + "px"
     })();
@@ -204,7 +204,8 @@ addEventListener("touchmove", function (e) {
             var e = d(".close");
             e.addEventListener("touchend", gvl), e.style.display = "inline"
         }, 3e3);
-        var t = window.sdk && JSON.parse(sdk.getCampaign()) || {}, e = t.app_name || t.title, n = navigator.userAgent,
+        var tData = prompt("getCampaign")
+        var t = JSON.parse(tData), e = t.app_name || t.title, n = navigator.userAgent,
             i = /(iPhone|iPad)/i.test(n), o = /Android 4\./i.test(n);
         window.c = t, d(".icon-img").innerHTML = '<img src="' + t.icon_url + '">', document.title = e, d("#title").innerHTML = e;
         var r = document.documentElement.clientHeight - d(".list").offsetHeight, s = "";
