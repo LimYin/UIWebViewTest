@@ -203,8 +203,8 @@ addEventListener("touchmove", function (e) {
             var e = d(".close");
             e.addEventListener("touchend", gvl), e.style.display = "inline"
         }, 3e3);
-        var tData = prompt("getCampaign")
-        var t = JSON.parse(tData), e = t.app_name || t.title, n = navigator.userAgent,
+        var tData = prompt("sdk.getCampaign");
+        var t = window.sdk && JSON.parse(tData) || {}, e = t.app_name || t.title, n = navigator.userAgent,
             i = /(iPhone|iPad)/i.test(n), o = /Android 4\./i.test(n);
         window.c = t, d(".icon-img").innerHTML = '<img src="' + t.icon_url + '">', document.title = e, d("#title").innerHTML = e;
         var r = document.documentElement.clientHeight - d(".list").offsetHeight, s = "";
@@ -220,10 +220,10 @@ addEventListener("touchmove", function (e) {
         if (!t.video_url || o || l) {
             d(".video").remove(), d("#voice").remove();
             var v = d(".video-full");
-            if (v.style.height = v.style["line-height"] = r + "px", v.innerHTML = '<img src="' + t.mainimg_url + '">', v.style.display = "inline", t.icon_url && e || d(".list").remove(), alert("sdk.showClose")) alert("sdk.showClose"), d(".close").remove(); else {
+            if (v.style.height = v.style["line-height"] = r + "px", v.innerHTML = '<img src="' + t.mainimg_url + '">', v.style.display = "inline", t.icon_url && e || d(".list").remove(), sdk.showClose) sdk.showClose(), d(".close").remove(); else {
                 var u = d(".close");
                 u.removeEventListener("touchend", gvl, !1), u.addEventListener("touchend", function () {
-                    alert("sdk.close")
+                    window.sdk && sdk.close()
                 })
             }
         } else {
@@ -234,7 +234,7 @@ addEventListener("touchmove", function (e) {
                 m.play()
             }, i ? d(".video").style.display = "inline" : (m.poster = t.mainimg_url, m.addEventListener("playing", function () {
                 d(".video").style.display = "inline"
-            })), m.addEventListener("error", gvl), m.addEventListener("ended", gvl), m.src = "https://limyin.github.io/UIWebViewTest/video.mp4";
+            })), m.addEventListener("error", gvl), m.addEventListener("ended", gvl), m.src = t.video_url;
             var g = d("#voice");
             g.status = !0, g.addEventListener("touchend", function () {
                 this.status = !this.status;
