@@ -36,7 +36,7 @@ static NSString *const  closeImg = @"iVBORw0KGgoAAAANSUhEUgAAAEgAAABIBAMAAACnw65
         leftButton.imageEdgeInsets =UIEdgeInsetsMake(0, -8,0, 8);
         //leftButton.hitEdgeInsets =UIEdgeInsetsMake(0, -6, 0, 0);
     }
-    self.navigationItem.leftBarButtonItems = @[spaceItem,left];
+    //self.navigationItem.leftBarButtonItems = @[spaceItem,left];
     
     
     UIView *rightBgview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
@@ -53,13 +53,21 @@ static NSString *const  closeImg = @"iVBORw0KGgoAAAANSUhEUgAAAEgAAABIBAMAAACnw65
     self.navigationItem.rightBarButtonItems = @[spaceItem,right];
     
     
-    _webView = [[UIWebView alloc]initWithFrame:self.view.frame];
+    WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+    WKPreferences *preference = [[WKPreferences alloc]init];
+    preference.javaScriptEnabled = YES;
+    [preference setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
+    config.preferences = preference;
+    config.allowsInlineMediaPlayback = YES;
+    config.requiresUserActionForMediaPlayback = NO;
+
+    
+    _webView = [[WKWebView alloc] initWithFrame:[UIScreen mainScreen].bounds configuration:config];
     _webView.backgroundColor = [UIColor whiteColor];
     _webView.opaque = NO;
-    _webView.scrollView.bounces = NO;
-    _webView.mediaPlaybackAllowsAirPlay = NO;
-    _webView.keyboardDisplayRequiresUserAction = NO;
-    _webView.delegate = self;
+    _webView.UIDelegate = self;
+    _webView.navigationDelegate = self;
+
     [self.view addSubview:self.webView];
     NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:_urlStr] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:60];
     
@@ -78,23 +86,41 @@ static NSString *const  closeImg = @"iVBORw0KGgoAAAANSUhEUgAAAEgAAABIBAMAAACnw65
     }];
 }
 
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
- 
-    return YES;
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
+        decisionHandler(WKNavigationActionPolicyAllow);
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView{
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView{
-    NSString *title =  [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    self.navigationItem.title = title;
-    [self.webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
+- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error{
     
 }
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation{
+    
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
+    decisionHandler(WKNavigationResponsePolicyAllow);
+
+}
+
+
+- (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation{
+    
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation{
+
+}
+
+- (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(null_unspecified WKNavigation *)navigation{
+    
+}
+
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error{
+    
+}
+
+
 
 @end

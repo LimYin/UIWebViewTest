@@ -39,12 +39,7 @@
     searchBar.showsCancelButton = YES;
     //光标颜色
     searchBar.tintColor = [UIColor blueColor];
-    //拿到searchBar的输入框
-    UITextField *searchTextField = [searchBar valueForKey:@"_searchField"];
-    //字体大小
-    searchTextField.font = [UIFont systemFontOfSize:15];
-    //输入框背景颜色
-    searchTextField.backgroundColor = [UIColor colorWithRed:234/255.0 green:235/255.0 blue:237/255.0 alpha:1];
+    
     //拿到取消按钮
     UIButton *cancleBtn = [searchBar valueForKey:@"cancelButton"];
     //设置按钮上的文字
@@ -86,7 +81,7 @@
     if(!urlStr || ![urlStr length]){
         urlStr = @"http://baidu.com";
     }
-    if(![urlStr containsString:@"http://"] && ![urlStr containsString:@"https://"]){
+    if(![urlStr containsString:@"://"]){
         urlStr = [NSString stringWithFormat:@"http://%@",urlStr];
     }
     [[NSUserDefaults standardUserDefaults]setObject:urlStr forKey:@"lastUrl"];
@@ -96,6 +91,7 @@
     webVC.urlStr = urlStr;
     
     UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:webVC];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:YES completion:nil];
 }
 
